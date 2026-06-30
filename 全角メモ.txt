@@ -1,0 +1,60 @@
+import maya.cmds as cmds
+import os
+
+class MayaMemoWindow:
+    def __init__(self):
+        self.window_name = "MayaProcedureMemo"
+        # 保存先: ドキュメント/maya_procedure_memo.txt
+        self.memo_path = os.path.join(os.path.expanduser("~"), "maya_procedure_memo.txt")
+        self.create_ui()
+        self.load_memo()
+
+    def create_ui(self):
+        if cmds.window(self.window_name, exists=True):
+            cmds.deleteUI(self.window_name)
+
+        self.window = cmds.window(self.window_name, title="作業手順メモ", widthHeight=(350, 450), sizeable=True)
+        
+        form = cmds.formLayout(numberOfDivisions=100)
+        
+        # 編集時に自動保存を走らせる設定 (cc = changeCommand)
+        self.memo_field = cmds.scrollField(
+            wordWrap=True, 
+            editable=True, 
+            changeCommand=self.save_memo
+        )
+        
+        btn_save = cmds.button(label="手動保存", command=self.save_memo, height=30, bgc=(0.3, 0.4, 0.5))
+        
+        cmds.formLayout(form, edit=True,
+            attachForm=[(self.memo_field, 'top', 5), (self.memo_field, 'left', 5), (self.memo_field, 'right', 5),
+                        (btn_save, 'left', 5), (btn_save, 'right', 5), (btn_save, 'bottom', 5)],
+            attachControl=[(self.memo_field, 'bottom', 5, btn_save)]
+        )
+        
+        cmds.showWindow(self.window)
+
+    def save_memo(self, *args):
+        # テキスト取得
+        memo_text = cmds.scrollField(self.memo_field, query=True, text=True)
+        try:
+            with open(self.memo_path, "w", encoding="utf-8") as f:
+                f.write(memo_text)
+            
+            # 画面上に保存完了を通知（inViewMessage）
+            cmds.inViewMessage(amg='<span style="color:#AAFF00;">メモを保存しました</span>', pos='topRight', fade=True)
+            
+        except Exception as e:
+            cmds.warning(f"保存に失敗しました: {e}")
+
+    def load_memo(self):
+        if os.path.exists(self.memo_path):
+            try:
+                with open(self.memo_path, "r", encoding="utf-8") as f:
+                    memo_text = f.read()
+                    cmds.scrollField(self.memo_field, edit=True, text=memo_text)
+            except Exception as e:
+                print(f"読み込み失敗: {e}")
+
+# 実行
+MayaMemoWindow()
