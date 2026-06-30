@@ -1,5 +1,5 @@
 # JapaneseMemo
-MAYAで日本語でメモを残したい場合の簡易メモ
+MAYA上に日本語でメモを残したい場合の簡易メモ
 
 ・テキストの中身をScript editorのPythonタブにコピーして実行
 ・スクリプトをShelfにコピーしての使用を想定
