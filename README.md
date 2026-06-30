@@ -1,2 +1,5 @@
 # JapaneseMemo
 MAYAで日本語でメモを残したい場合の簡易メモ
+
+①Script editorのPythonタブにコピーして実行
+②スクリプトをShelfにコピーしての使用を想定
