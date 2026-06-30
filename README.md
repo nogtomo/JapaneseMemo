@@ -1,0 +1,2 @@
+# JapaneseMemo
+MAYAで日本語でメモを残したい場合の簡易メモ
